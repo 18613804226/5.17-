@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<style>
+    #box{
+        width: 200px;
+        height: 150px;
+        border: 1px solid #00c77a;
+        text-align: center;
+    }
+    #box p{
+        color: #00c77a;
+        font-size: 25px;
+    }
+    #box button{
+        background-color: #3981f9;
+        outline: none;
+        border: none;
+        color: #fff;
+    }
+</style>
+<body>
+    <!-- 父传子：正向传值props 
+        子传父：逆向传值 事件监听 条件触发
+                a.抛出自定义事件监听
+                b.接收自定义事件监听
+    -->
+    <div id="box">
+        <parent></parent>
+    </div>
+    <template id="parent">
+        <div>
+            <p>{{showmsg}}</p>
+            <child  @event='getval'></child>
+        </div>
+    </template>
+    <template id="child">
+        <div>
+            <button @click='fn'>增加 1</button>
+            <button @click='fn1'>减少 1</button>
+        </div>
+    </template>
+    <script>
+        let app = new Vue({
+            el: '#box',
+            data: {},
+            components: {
+                'parent': {
+                    template: '#parent',
+                    data() {
+                        return {
+                            showmsg:0
+                        }
+                    },
+                    methods: {
+                        getval(val) {
+                            // 子传父 步骤四 拿到数据候处理
+                            this.showmsg = val
+                        }
+                    },
+                    components: {
+                        'child': {
+                            template: '#child',
+                            data() {
+                                return {
+                                    cmsg:0
+                                }
+                            },
+                            methods: {
+                                fn() {
+                                    // 子传父步骤2：通过this.$emit() 抛出自定义事件监听
+                                    this.cmsg ++
+                                    this.$emit('event',this.cmsg)
+                                },
+                                fn1() {
+                                    // 子传父步骤2：通过this.$emit() 抛出自定义事件监听
+                                    this.cmsg --
+                                    if (this.cmsg<0) {
+                                        this.cmsg=0
+                                    }
+                                    this.$emit('event',this.cmsg)
+                                }
+                            },
+                        }
+                    }
+                },
+
+            }
+        })
+    </script>
+</body>
+
+</html>
